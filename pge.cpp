@@ -25,9 +25,9 @@ void findPGE(int arr[], int size){
         if(s.empty()) v.push_back(-1);
         else if(s.top() > arr[i]) v.push_back(s.top());
         else{
-            while(s.empty() && s.top() <= arr[i]) s.pop();
+            while(!s.empty() && s.top() <= arr[i]) s.pop();
 
-            v.push_back(s.empty() ? -1 : s.top() > arr[i] ? s.top(): -1);
+            v.push_back(s.empty() ? -1 : s.top());
         }
         s.push(arr[i]);
     }
