@@ -4,7 +4,6 @@
 
 using namespace std;
 
-int computeMaxAreaHistogram(int *, int);
 vector<int> computeNSE(int arr[], int size);
 vector<int> computePSE(int arr[], int size);
 int calculateMaximumArea(int *, vector<int>, vector<int>, int);
@@ -35,56 +34,46 @@ int main(){
                 }
             }
         }
-        int res = computeMaxAreaHistogram(t_arr, C);
+        int res = calculateMaximumArea(t_arr, computeNSE(t_arr, C), computePSE(t_arr, C), C);
         maxx =  res > maxx ? res : maxx;
     }
 
     cout << maxx;
+
     return 0;
 }
 
-int computeMaxAreaHistogram(int arr[], int N){
-    vector<int> right = computeNSE(arr, N);
-    vector<int> left  = computePSE(arr, N);
-    return calculateMaximumArea(arr, right, left, N);
-}
 
 vector<int> computeNSE(int arr[], int size){
     vector<int> v;
-    stack< pair<int,int> > s;
+    stack<int> s;
 
     for(int i = size-1; i >= 0; i--){
         if(s.empty()) v.push_back(size);
-        else if(s.top().first < arr[i]) v.push_back(s.top().second);
+        else if(arr[s.top()] < arr[i]) v.push_back(s.top());
         else{
-            while(!s.empty() && s.top().first >= arr[i]) s.pop();
+            while(!s.empty() && arr[s.top()] >= arr[i]) s.pop();
 
-            v.push_back(s.empty() ? size : s.top().second);
+            v.push_back(s.empty() ? size : s.top());
         }
-        s.push({arr[i], i});
+        s.push(i);
     }
-
-    vector<int> rev;
-    for(int  i = size-1; i>=0 ; i--){
-        rev.push_back(v[i]);
-    }
-
-    return rev;
+    return v;
 }
 
 vector<int> computePSE(int arr[], int size){
     vector<int> v;
-    stack< pair<int, int> > s;
+    stack<int> s;
 
     for(int i = 0; i < size; i++){
         if(s.empty()) v.push_back(-1);
-        else if(s.top().first < arr[i]) v.push_back(s.top().second);
+        else if(arr[s.top()] < arr[i]) v.push_back(s.top());
         else{
-            while(!s.empty() && s.top().first >= arr[i]) s.pop();
+            while(!s.empty() && arr[s.top()] >= arr[i]) s.pop();
 
-            v.push_back(s.empty() ? -1 : s.top().second);
+            v.push_back(s.empty() ? -1 : s.top());
         }
-        s.push({arr[i], i});
+        s.push(i);
     }
 
     return v;
@@ -93,7 +82,7 @@ vector<int> computePSE(int arr[], int size){
 int calculateMaximumArea(int *arr, vector<int> right, vector<int> left, int size){
     int max = 0;
     for(int i = 0; i < size; i++){
-        int res = (right[i] - left[i] - 1) * arr[i];
+        int res = (right[size-i-1] - left[i] - 1) * arr[i];
         max = res > max ? res : max;
     }
 
